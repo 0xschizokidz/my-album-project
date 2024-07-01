@@ -1,0 +1,17 @@
+{
+  "name": "ethereum-api-quickstart",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "alchemy-sdk": "^3.3.1",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5"
+  }
+}

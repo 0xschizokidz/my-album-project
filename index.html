@@ -1,0 +1,28 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Album Dashboard</title>
+    <!-- Display a spinner while waiting for information -->
+    <img id="loader" src="ajax-loader.gif" style="display: none;">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.5/dist/web3.min.js" defer></script>
+    <script src="index.js" type="module" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>The Album Dashboard</h1>
+        <h2 id="album">Album Information</h2>
+        <label for="albumArtist">Artist</label>
+        <input id="albumArtist" type="text">
+        <label for="albumName">Album Name</label>
+        <input id="albumName" type="text">
+        <label for="tracks">Tracks</label>
+        <input id="tracks" type="text">
+        <button id="updateButton">Update Album</button>
+    </div>
+</body>
+</html>

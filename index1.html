@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Album Dashboard</title>
+    <!-- Display a spinner while waiting for information -->
+    <img id="loader" src="ajax-loader.gif" style="display: none;">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.5/dist/web3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>The Album Dashboard</h1>
+        <h2 id="album">Album Information</h2>
+        <label for="albumArtist">Artist</label>
+        <input id="albumArtist" type="text">
+
+        <label for="albumName">Album Name</label>
+        <input id="albumName" type="text">
+
+        <label for="tracks">Tracks</label>
+        <input id="tracks" type="text">
+
+        <button id="updateButton">Update Album</button>
+    </div>
+
+    <script>
+        // Variables for contract interaction
+        var myAccountNumber = '0x880EdAd988BA902e3FD8A3482B2C9d38dCBc2a78';
+        var myContractAddress = '0x7af54110B520Bfae99b68B1eCc892FdFa93Bba95';
+
+        // Initialize Web3
+        let web3 = new Web3(new Web3.providers.HttpProvider('https://eth-sepolia.g.alchemy.com/v2/FiCcSvlIuZs0HfGtBw_56NfE_mslOIMD'));
+
+
+        // Check account balance
+        web3.eth.getBalance(myAccountNumber).then(balance => {
+            console.log('Account Balance:', web3.utils.fromWei(balance, 'ether'), 'ETH');
+        });
+
+        // Contract ABI
+        var albumContractABI = [
+            // Your contract ABI here
+			{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"string","name":"albumEvent_Artist","type":"string","indexed":false},{"internalType":"string","name":"albumEvent_Title","type":"string","indexed":false},{"internalType":"uint256","name":"albumEvent_Tracks","type":"uint256","indexed":false}],"type":"event","name":"albumEvent","anonymous":false},{"inputs":[],"stateMutability":"view","type":"function","name":"albumTitle","outputs":[{"internalType":"string","name":"","type":"string"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"artist","outputs":[{"internalType":"string","name":"","type":"string"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"contractAuthor","outputs":[{"internalType":"string","name":"","type":"string"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"getAlbum","outputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}]},{"inputs":[{"internalType":"string","name":"_artist","type":"string"},{"internalType":"string","name":"_albumTitle","type":"string"},{"internalType":"uint256","name":"_tracks","type":"uint256"}],"stateMutability":"nonpayable","type":"function","name":"setAlbum"},{"inputs":[],"stateMutability":"view","type":"function","name":"tracks","outputs":[{"internalType":"uint256","name":"","type":"uint256"}]}
+        ];
+
+        // Build a reference to the smart contract
+        var albumContract = new web3.eth.Contract(albumContractABI, myContractAddress);
+
+        // Function to get album details
+        function getAlbumDetails() {
+            albumContract.methods.getAlbum().call()
+                .then(result => {
+                    $('#album').text(`Artist: ${result[0]}, Album: ${result[1]}, Tracks: ${result[2]}`);
+                })
+                .catch(error => console.error(error));
+        }
+
+        // Function to update album details
+        $('#updateButton').click(() => {
+            var artist = $('#albumArtist').val();
+            var albumName = $('#albumName').val();
+            var tracks = parseInt($('#tracks').val());
+
+            albumContract.methods.setAlbum(artist, albumName, tracks).send({ from: myAccountNumber })
+                .then(receipt => {
+                    console.log('Transaction Receipt:', receipt);
+                    getAlbumDetails();
+                })
+                .catch(error => console.error('Error updating album:', error));
+        });
+
+        // Load album details on page load
+        $(document).ready(() => {
+            getAlbumDetails();
+        });
+    </script>
+</body>
+
+</html>
